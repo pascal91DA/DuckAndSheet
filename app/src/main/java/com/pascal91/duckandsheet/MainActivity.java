@@ -1,24 +1,26 @@
 package com.pascal91.duckandsheet;
 
-import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pascal91.duckandsheet.db.AppDatabase;
 import com.pascal91.duckandsheet.model.User;
 import com.pascal91.duckandsheet.tasks.DatabaseAsyncTask;
 
-import java.util.HashMap;
-
 public class MainActivity extends AppCompatActivity {
 
     public static final String EXTRA_MESSAGE = "com.pascal91.duckandsheet.MESSAGE";
+
+    AlertDialog.Builder ad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,21 +31,26 @@ public class MainActivity extends AppCompatActivity {
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, NoteViewActivity.class);
-            String message = "Test Стринг";//editText.getText().toString();
-            intent.putExtra(EXTRA_MESSAGE, message);
-            startActivity(intent);
+            MyDialogFragment dialogFragment = new MyDialogFragment();
+            dialogFragment.show(this.getFragmentManager(), "span");
         });
 
+        AppDatabase db = AppDatabase.getInstance(MainActivity.this);
 
-        AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "database-name.db").build();
+        LinearLayout myRoot = findViewById(R.id.linLayoutMain);
 
-        User user = new User();
-        user.uid = 1;
-        user.firstName = "Stanislau";
-        user.lastName = "Paliakou";
+        for(User user: db.userDao().getAll()){
+            TextView textView = new TextView(getApplicationContext());
+            textView.setText(user.firstName + " " + user.lastName);
 
-        DatabaseAsyncTask task = new DatabaseAsyncTask(db, user);
+            textView.setOnClickListener(view -> Toast.makeText(
+                    MainActivity.this, user.firstName + " " + user.lastName,
+                    Toast.LENGTH_SHORT).show());
+
+            myRoot.addView(textView);
+        }
+
+        DatabaseAsyncTask task = new DatabaseAsyncTask(db, new User("Станислав", "Поляков"));
         task.execute();
 
         Toast.makeText(MainActivity.this, "Пук", Toast.LENGTH_LONG).show();
@@ -51,21 +58,25 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id){
+            case R.id.action_settings:
+                Toast.makeText(MainActivity.this, "Настройки", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(MainActivity.this, NoteViewActivity.class);
+                String message = "Test Стринг";//editText.getText().toString();
+                intent.putExtra(EXTRA_MESSAGE, message);
+                startActivity(intent);
+                return true;
+            case R.id.app_bar_search:
+                Toast.makeText(MainActivity.this, "Поиск", Toast.LENGTH_LONG).show();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

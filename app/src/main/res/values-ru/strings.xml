@@ -3,4 +3,8 @@
     <string name="app_name">Утка и таблица</string>
     <string name="action_settings">Настройки</string>
     <string name="hello_world">Алина подмигнул вам!</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="signin">Логин</string>
+    <string name="cancel">Отмена</string>
 </resources>

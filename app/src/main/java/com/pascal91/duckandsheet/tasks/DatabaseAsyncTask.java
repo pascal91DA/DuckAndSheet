@@ -5,11 +5,7 @@ import android.os.AsyncTask;
 import com.pascal91.duckandsheet.db.AppDatabase;
 import com.pascal91.duckandsheet.model.User;
 
-import java.util.concurrent.TimeUnit;
-
 public class DatabaseAsyncTask extends AsyncTask<Void, Void, Void> {
-
-    private static int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
 
     private AppDatabase db;
     private User user;
@@ -19,23 +15,35 @@ public class DatabaseAsyncTask extends AsyncTask<Void, Void, Void> {
         this.user = user;
     }
 
+    public AppDatabase getDb() {
+        return db;
+    }
+
+    public void setDb(AppDatabase db) {
+        this.db = db;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     protected Void doInBackground(Void... params) {
         try {
 
-            this.db.userDao().delete(user);
+            if(this.db.userDao().findByName(this.user.firstName, this.user.lastName) == null){
+                this.db.userDao().insertAll(this.user);
+            }
 
-            this.db.userDao().insertAll(this.user);
+            for(User user: this.db.userDao().getAll()){
+                System.out.println(user.firstName + " " + user.lastName);
+            }
 
-            this.db.close();
-
-            System.out.println("Записей: " + this.db.userDao().getAll().size());
-
-            TimeUnit.SECONDS.sleep(2);
-
-            System.out.println("Ядра: " + NUMBER_OF_CORES);
-
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
