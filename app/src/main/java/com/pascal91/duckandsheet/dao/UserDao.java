@@ -1,4 +1,4 @@
-package duckandsheet.pascal91.com.dao;
+package com.pascal91.duckandsheet.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
@@ -7,7 +7,7 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
-import duckandsheet.pascal91.com.model.User;
+import com.pascal91.duckandsheet.model.User;
 
 @Dao
 public interface UserDao {

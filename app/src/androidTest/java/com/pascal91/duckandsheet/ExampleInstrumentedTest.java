@@ -1,4 +1,4 @@
-package duckandsheet.pascal91.com;
+package com.pascal91.duckandsheet;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("duckandsheet.pascal91.com", appContext.getPackageName());
+        assertEquals("com.pascal91.duckandsheet", appContext.getPackageName());
     }
 }

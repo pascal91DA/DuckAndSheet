@@ -1,4 +1,4 @@
-package duckandsheet.pascal91.com;
+package com.pascal91.duckandsheet;
 
 import android.arch.persistence.room.Room;
 import android.content.Intent;
@@ -10,12 +10,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import duckandsheet.pascal91.com.db.AppDatabase;
-import duckandsheet.pascal91.com.model.User;
+import com.pascal91.duckandsheet.db.AppDatabase;
+import com.pascal91.duckandsheet.model.User;
+import com.pascal91.duckandsheet.tasks.DatabaseAsyncTask;
+
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String EXTRA_MESSAGE = "duckandsheet.pascal91.com.MESSAGE";
+    public static final String EXTRA_MESSAGE = "com.pascal91.duckandsheet.MESSAGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,18 +35,18 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "database-name").build();
+
+        AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "database-name.db").build();
 
         User user = new User();
         user.uid = 1;
         user.firstName = "Stanislau";
         user.lastName = "Paliakou";
 
-        //TODO: Сделать операции асинхронными!
-        // db.userDao().insertAll(user);
+        DatabaseAsyncTask task = new DatabaseAsyncTask(db, user);
+        task.execute();
 
-        Toast.makeText(this, "Пук", Toast.LENGTH_LONG).show();
-
+        Toast.makeText(MainActivity.this, "Пук", Toast.LENGTH_LONG).show();
     }
 
     @Override

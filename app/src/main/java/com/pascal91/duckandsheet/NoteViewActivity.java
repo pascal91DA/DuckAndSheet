@@ -1,4 +1,4 @@
-package duckandsheet.pascal91.com;
+package com.pascal91.duckandsheet;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
