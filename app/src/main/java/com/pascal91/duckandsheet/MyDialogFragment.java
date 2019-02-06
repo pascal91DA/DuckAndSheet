@@ -20,7 +20,7 @@ public class MyDialogFragment extends DialogFragment {
 //                    // FIRE ZE MISSILES!
 //                })
 //                .setNegativeButton(R.string.cancel, (dialog, id) -> {
-//                    // User cancelled the dialog
+//                    // Note cancelled the dialog
 //                });
 //        // Create the AlertDialog object and return it
 //        return builder.create();

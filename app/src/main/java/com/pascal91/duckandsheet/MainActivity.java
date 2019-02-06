@@ -1,26 +1,33 @@
 package com.pascal91.duckandsheet;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pascal91.duckandsheet.db.AppDatabase;
-import com.pascal91.duckandsheet.model.User;
-import com.pascal91.duckandsheet.tasks.DatabaseAsyncTask;
+import com.pascal91.duckandsheet.model.Note;
+
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String EXTRA_MESSAGE = "com.pascal91.duckandsheet.MESSAGE";
-
-    AlertDialog.Builder ad;
+    public static final String TITLE_STRING = "com.pascal91.duckandsheet.TITLE_STRING";
+    public static final String CONTENT_STRING = "com.pascal91.duckandsheet.CONTENT_STRING";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,29 +38,86 @@ public class MainActivity extends AppCompatActivity {
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
-            MyDialogFragment dialogFragment = new MyDialogFragment();
-            dialogFragment.show(this.getFragmentManager(), "span");
+            Intent intent = new Intent(MainActivity.this, NoteViewActivity.class);
+            String message = "Test Стринг";
+            intent.putExtra(MainActivity.CONTENT_STRING, message);
+            startActivity(intent);
         });
 
         AppDatabase db = AppDatabase.getInstance(MainActivity.this);
 
         LinearLayout myRoot = findViewById(R.id.linLayoutMain);
 
-        for(User user: db.userDao().getAll()){
-            TextView textView = new TextView(getApplicationContext());
-            textView.setText(user.firstName + " " + user.lastName);
+        for (Note note : db.userDao().getAll()) {
 
-            textView.setOnClickListener(view -> Toast.makeText(
-                    MainActivity.this, user.firstName + " " + user.lastName,
-                    Toast.LENGTH_SHORT).show());
+            CardView card = new CardView(getApplicationContext());
 
-            myRoot.addView(textView);
+            LayoutParams cardLayoutParams = new LayoutParams(
+                    LayoutParams.MATCH_PARENT,
+                    LayoutParams.MATCH_PARENT
+            );
+
+            cardLayoutParams.setMargins(8, 0, 8, 16);
+
+            card.setLayoutParams(cardLayoutParams);
+            card.setContentPadding(8, 8, 8, 8);
+            card.setCardBackgroundColor(
+                    Color.rgb(
+                            new Random().nextInt(255),
+                            new Random().nextInt(255),
+                            new Random().nextInt(255)
+                    ));
+
+            TextView noteTitleTextView = new TextView(getApplicationContext());
+            TextView noteContentTextView = new TextView(getApplicationContext());
+
+            LinearLayout cardLinearLayout = new LinearLayout(getApplicationContext());
+
+            cardLinearLayout.setOrientation(LinearLayout.VERTICAL);
+
+            noteTitleTextView.setTypeface(Typeface.DEFAULT_BOLD);
+            noteTitleTextView.setText(note.title);
+            noteContentTextView.setText(note.content);
+
+            noteTitleTextView.setLayoutParams(new LayoutParams(
+                    LayoutParams.MATCH_PARENT,
+                    LayoutParams.WRAP_CONTENT
+            ));
+
+            noteContentTextView.setLayoutParams(new LayoutParams(
+                    LayoutParams.WRAP_CONTENT,
+                    LayoutParams.WRAP_CONTENT
+            ));
+
+            cardLinearLayout.addView(noteTitleTextView);
+            cardLinearLayout.addView(noteContentTextView);
+            card.addView(cardLinearLayout);
+
+            card.setOnClickListener(view -> {
+                Toast.makeText(MainActivity.this, note.title + "\n\n" + note.content, Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(MainActivity.this, NoteViewActivity.class);
+                intent.putExtra(MainActivity.TITLE_STRING, note.title);
+                intent.putExtra(MainActivity.CONTENT_STRING, note.content);
+                startActivity(intent);
+            });
+
+
+            card.setOnLongClickListener(view -> {
+                Toast.makeText(
+                        MainActivity.this, note.title + "\n\n" + "Зарегистрировано долгое нажатие!",
+                        Toast.LENGTH_SHORT).show();
+                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                } else {
+                    v.vibrate(500);
+                }
+                return true;
+            });
+
+            myRoot.addView(card);
         }
-
-        DatabaseAsyncTask task = new DatabaseAsyncTask(db, new User("Станислав", "Поляков"));
-        task.execute();
-
-        Toast.makeText(MainActivity.this, "Пук", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -66,13 +130,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        switch (id){
+        switch (id) {
             case R.id.action_settings:
-                Toast.makeText(MainActivity.this, "Настройки", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(MainActivity.this, NoteViewActivity.class);
-                String message = "Test Стринг";//editText.getText().toString();
-                intent.putExtra(EXTRA_MESSAGE, message);
-                startActivity(intent);
+                MyDialogFragment dialogFragment = new MyDialogFragment();
+                dialogFragment.show(this.getFragmentManager(), "span");
                 return true;
             case R.id.app_bar_search:
                 Toast.makeText(MainActivity.this, "Поиск", Toast.LENGTH_LONG).show();

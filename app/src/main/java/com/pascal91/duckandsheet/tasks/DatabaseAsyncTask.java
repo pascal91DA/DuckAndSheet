@@ -3,16 +3,16 @@ package com.pascal91.duckandsheet.tasks;
 import android.os.AsyncTask;
 
 import com.pascal91.duckandsheet.db.AppDatabase;
-import com.pascal91.duckandsheet.model.User;
+import com.pascal91.duckandsheet.model.Note;
 
 public class DatabaseAsyncTask extends AsyncTask<Void, Void, Void> {
 
     private AppDatabase db;
-    private User user;
+    private Note note;
 
-    public DatabaseAsyncTask(AppDatabase db, User user) {
+    public DatabaseAsyncTask(AppDatabase db, Note note) {
         this.db = db;
-        this.user = user;
+        this.note = note;
     }
 
     public AppDatabase getDb() {
@@ -23,24 +23,24 @@ public class DatabaseAsyncTask extends AsyncTask<Void, Void, Void> {
         this.db = db;
     }
 
-    public User getUser() {
-        return user;
+    public Note getNote() {
+        return note;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setNote(Note note) {
+        this.note = note;
     }
 
     @Override
     protected Void doInBackground(Void... params) {
         try {
 
-            if(this.db.userDao().findByName(this.user.firstName, this.user.lastName) == null){
-                this.db.userDao().insertAll(this.user);
+            if(this.db.userDao().findByName(this.note.title, this.note.content) == null){
+                this.db.userDao().insertAll(this.note);
             }
 
-            for(User user: this.db.userDao().getAll()){
-                System.out.println(user.firstName + " " + user.lastName);
+            for(Note note : this.db.userDao().getAll()){
+                System.out.println(note.title + " " + note.content);
             }
 
         } catch (Exception e) {

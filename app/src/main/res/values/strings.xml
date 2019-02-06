@@ -6,4 +6,6 @@
     <string name="password">Password</string>
     <string name="signin">Sign in</string>
     <string name="cancel">Cancel</string>
+    <string name="multistring_test">"Many <strong>strings</strong> text Many strings text Many   strings <br /> text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text Many strings text "</string>
+    <string name="save_file">Save</string>
 </resources>
