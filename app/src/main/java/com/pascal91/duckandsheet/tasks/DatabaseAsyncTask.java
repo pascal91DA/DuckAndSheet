@@ -35,8 +35,13 @@ public class DatabaseAsyncTask extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... params) {
         try {
 
-            if(this.db.userDao().findByName(this.note.title, this.note.content) == null){
+            System.out.println("1:" + this.db.userDao().loadAllByIds(new int[]{this.note.uid}).size());
+            System.out.println("2:" + this.note.uid);
+
+            if(this.db.userDao().loadAllByIds(new int[]{this.note.uid}).size() == 0){
                 this.db.userDao().insertAll(this.note);
+            }else{
+                this.db.userDao().update(this.note);
             }
 
             for(Note note : this.db.userDao().getAll()){

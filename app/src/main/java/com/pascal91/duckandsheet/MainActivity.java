@@ -22,10 +22,12 @@ import android.widget.Toast;
 import com.pascal91.duckandsheet.db.AppDatabase;
 import com.pascal91.duckandsheet.model.Note;
 
+import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String UID = "com.pascal91.duckandsheet.UID";
     public static final String TITLE_STRING = "com.pascal91.duckandsheet.TITLE_STRING";
     public static final String CONTENT_STRING = "com.pascal91.duckandsheet.CONTENT_STRING";
 
@@ -48,75 +50,85 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayout myRoot = findViewById(R.id.linLayoutMain);
 
-        for (Note note : db.userDao().getAll()) {
+        List<Note> notes = db.userDao().getAll();
 
-            CardView card = new CardView(getApplicationContext());
+        if(!notes.isEmpty()) {
 
-            LayoutParams cardLayoutParams = new LayoutParams(
-                    LayoutParams.MATCH_PARENT,
-                    LayoutParams.MATCH_PARENT
-            );
+            for (Note note : notes) {
 
-            cardLayoutParams.setMargins(8, 0, 8, 16);
+                CardView card = new CardView(getApplicationContext());
 
-            card.setLayoutParams(cardLayoutParams);
-            card.setContentPadding(8, 8, 8, 8);
-            card.setCardBackgroundColor(
-                    Color.rgb(
-                            new Random().nextInt(255),
-                            new Random().nextInt(255),
-                            new Random().nextInt(255)
-                    ));
+                LayoutParams cardLayoutParams = new LayoutParams(
+                        LayoutParams.MATCH_PARENT,
+                        LayoutParams.MATCH_PARENT
+                );
 
-            TextView noteTitleTextView = new TextView(getApplicationContext());
-            TextView noteContentTextView = new TextView(getApplicationContext());
+                cardLayoutParams.setMargins(8, 0, 8, 16);
 
-            LinearLayout cardLinearLayout = new LinearLayout(getApplicationContext());
+                card.setLayoutParams(cardLayoutParams);
+                card.setContentPadding(8, 8, 8, 8);
+                card.setCardBackgroundColor(
+                        Color.rgb(
+                                new Random().nextInt(255),
+                                new Random().nextInt(255),
+                                new Random().nextInt(255)
+                        ));
 
-            cardLinearLayout.setOrientation(LinearLayout.VERTICAL);
+                TextView noteTitleTextView = new TextView(getApplicationContext());
+                TextView noteContentTextView = new TextView(getApplicationContext());
 
-            noteTitleTextView.setTypeface(Typeface.DEFAULT_BOLD);
-            noteTitleTextView.setText(note.title);
-            noteContentTextView.setText(note.content);
+                LinearLayout cardLinearLayout = new LinearLayout(getApplicationContext());
 
-            noteTitleTextView.setLayoutParams(new LayoutParams(
-                    LayoutParams.MATCH_PARENT,
-                    LayoutParams.WRAP_CONTENT
-            ));
+                cardLinearLayout.setOrientation(LinearLayout.VERTICAL);
 
-            noteContentTextView.setLayoutParams(new LayoutParams(
-                    LayoutParams.WRAP_CONTENT,
-                    LayoutParams.WRAP_CONTENT
-            ));
+                noteTitleTextView.setTypeface(Typeface.DEFAULT_BOLD);
+                noteTitleTextView.setText(note.title);
+                noteContentTextView.setText(note.content);
 
-            cardLinearLayout.addView(noteTitleTextView);
-            cardLinearLayout.addView(noteContentTextView);
-            card.addView(cardLinearLayout);
+                noteTitleTextView.setLayoutParams(new LayoutParams(
+                        LayoutParams.MATCH_PARENT,
+                        LayoutParams.WRAP_CONTENT
+                ));
 
-            card.setOnClickListener(view -> {
-                Toast.makeText(MainActivity.this, note.title + "\n\n" + note.content, Toast.LENGTH_SHORT).show();
+                noteContentTextView.setLayoutParams(new LayoutParams(
+                        LayoutParams.WRAP_CONTENT,
+                        LayoutParams.WRAP_CONTENT
+                ));
 
-                Intent intent = new Intent(MainActivity.this, NoteViewActivity.class);
-                intent.putExtra(MainActivity.TITLE_STRING, note.title);
-                intent.putExtra(MainActivity.CONTENT_STRING, note.content);
-                startActivity(intent);
-            });
+                cardLinearLayout.addView(noteTitleTextView);
+                cardLinearLayout.addView(noteContentTextView);
+                card.addView(cardLinearLayout);
+
+                card.setOnClickListener(view -> {
+                    Toast.makeText(MainActivity.this, note.title + "\n\n" + note.content, Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(MainActivity.this, NoteViewActivity.class);
+                    intent.putExtra(MainActivity.TITLE_STRING, note.title);
+                    intent.putExtra(MainActivity.CONTENT_STRING, note.content);
+                    intent.putExtra(MainActivity.UID, note.uid);
+                    startActivity(intent);
+                });
 
 
-            card.setOnLongClickListener(view -> {
-                Toast.makeText(
-                        MainActivity.this, note.title + "\n\n" + "Зарегистрировано долгое нажатие!",
-                        Toast.LENGTH_SHORT).show();
-                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                } else {
-                    v.vibrate(500);
-                }
-                return true;
-            });
+                card.setOnLongClickListener(view -> {
+                    Toast.makeText(
+                            MainActivity.this, note.uid + ":" + note.title + "\n\n" + "Зарегистрировано долгое нажатие!",
+                            Toast.LENGTH_SHORT).show();
+                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                    } else {
+                        v.vibrate(500);
+                    }
+                    return true;
+                });
 
-            myRoot.addView(card);
+                myRoot.addView(card);
+            }
+        }else{
+            TextView textView = new TextView(getApplicationContext());
+            textView.setText("Нет заметок");
+            myRoot.addView(textView);
         }
     }
 

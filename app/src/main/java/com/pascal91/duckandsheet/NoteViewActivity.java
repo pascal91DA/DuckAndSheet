@@ -20,6 +20,8 @@ public class NoteViewActivity extends AppCompatActivity {
 
     EditText contentEdit;
 
+    int uid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +34,8 @@ public class NoteViewActivity extends AppCompatActivity {
 
         titleEdit.setText(intent.getStringExtra(MainActivity.TITLE_STRING));
         contentEdit.setText(intent.getStringExtra(MainActivity.CONTENT_STRING));
+
+        uid = intent.getIntExtra(MainActivity.UID, 0);
     }
 
     @Override
@@ -56,7 +60,7 @@ public class NoteViewActivity extends AppCompatActivity {
                 }
 
                 AppDatabase db = AppDatabase.getInstance(NoteViewActivity.this);
-                DatabaseAsyncTask task = new DatabaseAsyncTask(db, new Note(titleEdit.getText().toString(), contentEdit.getText().toString()));
+                DatabaseAsyncTask task = new DatabaseAsyncTask(db, new Note(uid, titleEdit.getText().toString(), contentEdit.getText().toString()));
                 task.execute();
 
 
