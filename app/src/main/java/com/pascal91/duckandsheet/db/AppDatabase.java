@@ -10,7 +10,7 @@ import com.pascal91.duckandsheet.model.Note;
 
 @Database(entities = {Note.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
-    public abstract NoteDao userDao();
+    public abstract NoteDao noteDao();
 
     private static AppDatabase noteDB;
 

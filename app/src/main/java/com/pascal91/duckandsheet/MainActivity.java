@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayout myRoot = findViewById(R.id.linLayoutMain);
 
-        List<Note> notes = db.userDao().getAll();
+        List<Note> notes = db.noteDao().getAll();
 
         if(!notes.isEmpty()) {
 
@@ -111,15 +112,16 @@ public class MainActivity extends AppCompatActivity {
 
 
                 card.setOnLongClickListener(view -> {
-                    Toast.makeText(
-                            MainActivity.this, note.uid + ":" + note.title + "\n\n" + "Зарегистрировано долгое нажатие!",
-                            Toast.LENGTH_SHORT).show();
                     Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
                     } else {
                         v.vibrate(500);
                     }
+
+                    AlertDialog diaBox = askDeleteOption(note);
+                    diaBox.show();
+
                     return true;
                 });
 
@@ -130,6 +132,24 @@ public class MainActivity extends AppCompatActivity {
             textView.setText("Нет заметок");
             myRoot.addView(textView);
         }
+    }
+
+    private AlertDialog askDeleteOption(Note note){
+        return new AlertDialog.Builder(this)
+                .setTitle("Удалить")
+                .setMessage("Вы хотите удалить заметку: " + note.title + "?")
+                .setIcon(R.drawable.ic_delete_icon)
+
+                .setPositiveButton("Удалить", (dialog, whichButton) -> {
+                    AppDatabase db = AppDatabase.getInstance(MainActivity.this);
+                    db.noteDao().delete(note);
+                    dialog.dismiss();
+                    Intent intent = getIntent();
+                    finish();
+                    startActivity(intent);
+                })
+                .setNegativeButton("Отмена", (dialog, which) -> dialog.dismiss())
+                .create();
     }
 
     @Override
