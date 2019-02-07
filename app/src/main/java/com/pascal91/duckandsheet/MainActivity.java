@@ -42,8 +42,6 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, NoteViewActivity.class);
-            String message = "Test Стринг";
-            intent.putExtra(MainActivity.CONTENT_STRING, message);
             startActivity(intent);
         });
 

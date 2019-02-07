@@ -3,6 +3,7 @@ package com.pascal91.duckandsheet;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -56,7 +57,7 @@ public class NoteViewActivity extends AppCompatActivity {
             case R.id.save_file_action:
 
                 if (titleEdit.getText().length() == 0) {
-                    titleEdit.setText(new Date().toLocaleString());
+                    titleEdit.setText(DateFormat.format("dd-MM-yyyy HH:mm:ss", new Date()));
                 }
 
                 AppDatabase db = AppDatabase.getInstance(NoteViewActivity.this);
