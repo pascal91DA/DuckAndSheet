@@ -75,8 +75,21 @@ public class MainActivity extends AppCompatActivity {
                                 new Random().nextInt(255)
                         ));
 
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                    card.setBackground(getDrawable(R.drawable.ic_launcher_background));
+//                }
+
+                int randomTextColor = Color.rgb(
+                        new Random().nextInt(255),
+                        new Random().nextInt(255),
+                        new Random().nextInt(255)
+                );
+
                 TextView noteTitleTextView = new TextView(getApplicationContext());
                 TextView noteContentTextView = new TextView(getApplicationContext());
+
+                noteTitleTextView.setTextColor(randomTextColor);
+                noteContentTextView.setTextColor(randomTextColor);
 
                 LinearLayout cardLinearLayout = new LinearLayout(getApplicationContext());
 
@@ -130,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
         }else{
             TextView textView = new TextView(getApplicationContext());
             textView.setText("Нет заметок");
+            textView.setTextColor(Color.GRAY);
             myRoot.addView(textView);
         }
     }
