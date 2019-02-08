@@ -66,28 +66,17 @@ public class MainActivity extends AppCompatActivity {
 
                 card.setLayoutParams(cardLayoutParams);
                 card.setContentPadding(8, 8, 8, 8);
-                card.setCardBackgroundColor(
-                        Color.rgb(
-                                new Random().nextInt(255),
-                                new Random().nextInt(255),
-                                new Random().nextInt(255)
-                        ));
+                card.setCardBackgroundColor(note.contentColor);
 
 //                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //                    card.setBackground(getDrawable(R.drawable.ic_launcher_background));
 //                }
 
-                int randomTextColor = Color.rgb(
-                        new Random().nextInt(255),
-                        new Random().nextInt(255),
-                        new Random().nextInt(255)
-                );
-
                 TextView noteTitleTextView = new TextView(getApplicationContext());
                 TextView noteContentTextView = new TextView(getApplicationContext());
 
-                noteTitleTextView.setTextColor(randomTextColor);
-                noteContentTextView.setTextColor(randomTextColor);
+                noteTitleTextView.setTextColor(note.textColor);
+                noteContentTextView.setTextColor(note.textColor);
 
                 LinearLayout cardLinearLayout = new LinearLayout(getApplicationContext());
 

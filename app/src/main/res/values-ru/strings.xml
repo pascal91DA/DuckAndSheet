@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Утка и таблица</string>
+    <string name="app_name">Задание 1</string>
     <string name="action_settings">Настройки</string>
     <string name="hello_world">Алина подмигнул вам!</string>
     <string name="login">Логин</string>

@@ -16,6 +16,12 @@ public class Note {
     @ColumnInfo(name = "content")
     public String content;
 
+    @ColumnInfo(name = "text_color")
+    public int textColor;
+
+    @ColumnInfo(name = "content_color")
+    public int contentColor;
+
     public Note(int uid, String title, String content) {
         this.uid = uid;
         this.title = title;
