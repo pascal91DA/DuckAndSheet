@@ -10,22 +10,6 @@ import android.widget.Toast;
 
 public class MyDialogFragment extends DialogFragment {
 
-
-//    @Override
-//    public Dialog onCreateDialog(Bundle savedInstanceState) {
-//        // Use the Builder class for convenient dialog construction
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//        builder.setMessage(R.string.app_name)
-//                .setPositiveButton(R.string.login, (dialog, id) -> {
-//                    // FIRE ZE MISSILES!
-//                })
-//                .setNegativeButton(R.string.cancel, (dialog, id) -> {
-//                    // Note cancelled the dialog
-//                });
-//        // Create the AlertDialog object and return it
-//        return builder.create();
-//    }
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

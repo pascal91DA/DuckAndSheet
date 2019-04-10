@@ -70,21 +70,15 @@ public class NoteViewActivity extends AppCompatActivity {
         AmbilWarnaDialog dialog = new AmbilWarnaDialog(this, color, false, new AmbilWarnaDialog.OnAmbilWarnaListener() {
             @Override
             public void onOk(AmbilWarnaDialog dialog, int color) {
-
-                Toast.makeText(getApplicationContext(), String.valueOf(color), Toast.LENGTH_SHORT).show();
-
                 if (isText) {
                     textColor = color;
                 } else {
                     contentColor = color;
                 }
-
             }
 
             @Override
-            public void onCancel(AmbilWarnaDialog dialog) {
-                Toast.makeText(getApplicationContext(), "Action canceled!", Toast.LENGTH_SHORT).show();
-            }
+            public void onCancel(AmbilWarnaDialog dialog) {}
         });
         dialog.show();
     }
@@ -111,7 +105,7 @@ public class NoteViewActivity extends AppCompatActivity {
                 DatabaseAsyncTask task = new DatabaseAsyncTask(db, newNote);
                 task.execute();
 
-                Toast.makeText(NoteViewActivity.this, "Сохранено", Toast.LENGTH_LONG).show();
+                Toast.makeText(NoteViewActivity.this, "Заметка сохранена", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(NoteViewActivity.this, MainActivity.class);
                 startActivity(intent);
                 return true;

@@ -7,9 +7,14 @@
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+
     <item
-        android:id="@+id/app_bar_search"
-        android:icon="@drawable/ic_search_black_24dp"
+        android:id="@+id/search"
+        android:icon="@drawable/ic_search_icon"
         android:title="@android:string/search_go"
-        app:actionViewClass="android.widget.SearchView" />
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="collapseActionView|ifRoom"
+        android:imeOptions="actionSearch"
+        />
+
 </menu>

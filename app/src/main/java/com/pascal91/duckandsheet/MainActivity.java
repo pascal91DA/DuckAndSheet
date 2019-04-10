@@ -1,5 +1,6 @@
 package com.pascal91.duckandsheet;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -17,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +26,6 @@ import com.pascal91.duckandsheet.db.AppDatabase;
 import com.pascal91.duckandsheet.model.Note;
 
 import java.util.List;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         List<Note> notes = db.noteDao().getAll();
 
-        if(!notes.isEmpty()) {
+        if (!notes.isEmpty()) {
 
             for (Note note : notes) {
 
@@ -101,8 +102,6 @@ public class MainActivity extends AppCompatActivity {
                 card.addView(cardLinearLayout);
 
                 card.setOnClickListener(view -> {
-                    Toast.makeText(MainActivity.this, note.title + "\n\n" + note.content, Toast.LENGTH_SHORT).show();
-
                     Intent intent = new Intent(MainActivity.this, NoteViewActivity.class);
                     intent.putExtra(MainActivity.TITLE_STRING, note.title);
                     intent.putExtra(MainActivity.CONTENT_STRING, note.content);
@@ -127,15 +126,17 @@ public class MainActivity extends AppCompatActivity {
 
                 myRoot.addView(card);
             }
-        }else{
+        } else {
             TextView textView = new TextView(getApplicationContext());
             textView.setText("Нет заметок");
             textView.setTextColor(Color.GRAY);
             myRoot.addView(textView);
         }
+
+        handleIntent(getIntent());
     }
 
-    private AlertDialog askDeleteOption(Note note){
+    private AlertDialog askDeleteOption(Note note) {
         return new AlertDialog.Builder(this)
                 .setTitle("Удалить")
                 .setMessage("Вы хотите удалить заметку: " + note.title + "?")
@@ -156,7 +157,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
         return true;
+    }
+
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            Toast.makeText(MainActivity.this, query, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -168,8 +181,27 @@ public class MainActivity extends AppCompatActivity {
                 MyDialogFragment dialogFragment = new MyDialogFragment();
                 dialogFragment.show(this.getFragmentManager(), "span");
                 return true;
-            case R.id.app_bar_search:
-                Toast.makeText(MainActivity.this, "Поиск", Toast.LENGTH_LONG).show();
+            case R.id.search:
+                AppDatabase db = AppDatabase.getInstance(MainActivity.this);
+
+                // TODO: fix java.lang.ClassCastException: android.support.v7.view.menu.ActionMenuItemView cannot be cast to android.widget.SearchView
+                SearchView searchView = findViewById(R.id.search);
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+
+                        List<Note> notes = db.noteDao().findNotes("%" + query + "%");
+                        Toast.makeText(MainActivity.this, "Найдено \"" + query +"\": " + notes.size(), Toast.LENGTH_SHORT).show();
+
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        return false;
+                    }
+                });
+
                 return true;
         }
 

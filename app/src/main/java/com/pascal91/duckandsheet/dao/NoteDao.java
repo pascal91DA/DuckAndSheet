@@ -18,9 +18,8 @@ public interface NoteDao {
     @Query("SELECT * FROM Note WHERE uid IN (:userIds)")
     List<Note> loadAllByIds(int[] userIds);
 
-    //@Query("SELECT * FROM Note WHERE title LIKE :first AND " + "content LIKE :last LIMIT 1")
-    @Query("SELECT * FROM  Note WHERE Note.title LIKE '%:text%' OR Note.content LIKE '%:text%'")
-    Note findNote(String text);
+    @Query("SELECT * FROM  Note WHERE Note.title LIKE :text OR Note.content LIKE :text")
+    List<Note> findNotes(String text);
 
     @Insert
     void insertAll(Note... notes);
